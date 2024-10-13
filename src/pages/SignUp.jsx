@@ -9,7 +9,7 @@ function SignUp() {
         <SignUpForm />
       </div>
       <div className="mx-auto w-full max-w-xl">
-        <SignInWithGoogleButton title="Sign Up" />
+        <SignInWithGoogleButton title="Google" />
       </div>
     </div>
   );

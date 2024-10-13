@@ -1,26 +1,66 @@
-import { NavLink } from 'react-router-dom';
-
-import { NavButton } from '..';
+import { NavLink } from "react-router-dom";
+import { NavButton } from "..";
+import { useState } from "react";
 
 function SubNavigationBar({ className }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  // Hàm để xử lý khi chọn danh mục
+  const handleLinkClick = () => {
+    if (isOpen) {
+      toggleMenu(); // Đóng menu nếu nó đang mở
+    }
+  };
+
   return (
-    <ul className={`items-center gap-8 ${className}`}>
-      <NavLink className={({ isActive }) => (isActive ? 'active-page' : null)} to="/">
-        <NavButton text="Trang chủ" />
-      </NavLink>
-      <NavLink className={({ isActive }) => (isActive ? 'active-page' : null)} to="/quizzes">
-        <NavButton text="Thi trắc nghiệm" />
-      </NavLink>
-      <NavLink className={({ isActive }) => (isActive ? 'active-page' : null)} to="/learn">
-        <NavButton text="Videos" />
-      </NavLink>
-      <NavLink className={({ isActive }) => (isActive ? 'active-page' : null)} to="/chat-ai">
-        <NavButton text="CHAT AI" />
-      </NavLink>
-      <NavLink className={({ isActive }) => (isActive ? 'active-page' : null)} to="/about">
-        <NavButton text="Giới thiệu" />
-      </NavLink>
-    </ul>
+    <nav className={`relative ${className}`}>
+      <button className="md:hidden ml-auto mr-4" onClick={toggleMenu}>
+        <span className="material-icons">menu</span>
+      </button>
+      <ul
+        className={`md:flex ${isOpen ? "block" : "hidden"} absolute bg-white md:static top-10 left-0 right-0 z-10`}
+      >
+        <NavLink
+          className={({ isActive }) => (isActive ? "active-page" : null)}
+          to="/"
+          onClick={handleLinkClick}
+        >
+          <NavButton text="Trang chủ" />
+        </NavLink>
+        <NavLink
+          className={({ isActive }) => (isActive ? "active-page" : null)}
+          to="/quizzes"
+          onClick={handleLinkClick}
+        >
+          <NavButton text="Thi trắc nghiệm" />
+        </NavLink>
+        <NavLink
+          className={({ isActive }) => (isActive ? "active-page" : null)}
+          to="/learn"
+          onClick={handleLinkClick}
+        >
+          <NavButton text="Videos" />
+        </NavLink>
+        <NavLink
+          className={({ isActive }) => (isActive ? "active-page" : null)}
+          to="/chat-ai"
+          onClick={handleLinkClick}
+        >
+          <NavButton text="CHAT AI" />
+        </NavLink>
+        <NavLink
+          className={({ isActive }) => (isActive ? "active-page" : null)}
+          to="/about"
+          onClick={handleLinkClick}
+        >
+          <NavButton text="Giới thiệu" />
+        </NavLink>
+      </ul>
+    </nav>
   );
 }
 

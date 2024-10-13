@@ -71,13 +71,12 @@ function Quiz() {
     handleAnswerChange(e, index);
   };
 
+
   const playSound = () => {
     const audio = new Audio(successSound);
-    audio.play().catch(error => {
-      audio.play().catch(error => console.error("Error playing sound:", error));
-    });
+    audio.play().catch(error => console.error("Error playing sound:", error));
   };
-
+  
   // Get next question
   const nextQuestion = useCallback(() => {
     if (answerSelected) {

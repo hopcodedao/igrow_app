@@ -111,7 +111,7 @@
 
   /* Page heading */
   .page-heading {
-    @apply mt-40 mb-10 text-center text-3xl font-bold uppercase tracking-wider text-primary dark:text-secondary sm:text-5xl xl:mt-28;
+    @apply mt-10 mb-10 text-center text-3xl font-bold uppercase tracking-wider text-primary dark:text-secondary sm:text-5xl xl:mt-28;
   }
 
   /* Score row */
@@ -129,3 +129,17 @@
   }
 }
 
+ul {
+  list-style-type: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-left: 20px;
+}
+
+@media (min-width: 768px) {
+  ul {
+    display: flex;
+    justify-content: space-between;
+  }
+}

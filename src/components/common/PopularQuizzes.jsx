@@ -22,7 +22,6 @@ function PopularQuizzes() {
               <Thumbnail
                 id={quiz.topicID}
                 submissions={quiz?.submissions}
-                title={quiz?.topicID?.split('-').join(' ')}
                 type="popularQuiz"
               />
             </Link>

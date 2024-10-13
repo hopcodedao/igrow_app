@@ -8,7 +8,7 @@ function Home() {
 
   return (
     <div
-      className={`mt-36 flex animate-reveal flex-col items-center justify-center xl:mt-28 ${
+      className={`mt-10 flex animate-reveal flex-col items-center justify-center xl:mt-28 ${
         !imageLoaded && 'hidden'
       }`}
     >

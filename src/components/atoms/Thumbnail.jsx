@@ -10,8 +10,7 @@ function Thumbnail({ title, submissions, id, noq, type }) {
 
   if (type === 'video') link = `http://img.youtube.com/vi/${id}/maxresdefault.jpg`;
   else
-    link = `../thumbnails/${id}.webp`;
-
+    link = `https://raw.githubusercontent.com/hopcodedao/thietkeantoangiaothong/refs/heads/main/thumbnails/${id}.webp`;
   return (
     <div
       className="card max-w-lg cursor-pointer rounded-lg border-2 transition-all duration-300 hover:border-primary"
