@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import { Toaster } from 'react-hot-toast';
+import { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 
 import {
   Route,
   RouterProvider,
   Routes,
   ScrollRestoration,
-  createBrowserRouter
-} from 'react-router-dom';
+  createBrowserRouter,
+} from "react-router-dom";
 
 import {
   DesignComponent,
@@ -15,10 +15,14 @@ import {
   MainNavigationBar,
   Preloader,
   PrivateOutlet,
-  PublicOutlet
-} from './components';
+  PublicOutlet,
+} from "./components";
 // eslint-disable-next-line import/order
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider } from "./contexts/AuthContext";
+
+// Logic đồng bộ dữ liệu Offline
+import { getDatabase, ref, push, update, child } from "firebase/database";
+import { getPendingProgressFromDB, markProgressAsSynced } from "./utils/db";
 
 // Website Pages
 import {
@@ -35,11 +39,11 @@ import {
   Result,
   SignUp,
   Submissions,
-  Video
-} from './pages';
+  Video,
+} from "./pages";
 
 // Make sure you only have one import like this:
-import ChatAI from './components/ChatAI'; // This should only appear once
+import ChatAI from "./components/ChatAI"; // This should only appear once
 
 function Root() {
   return (
@@ -59,8 +63,16 @@ function Root() {
             <Route element={<Login />} path="login" />
           </Route>
           <Route element={<PrivateOutlet />} path="/">
-            <Route element={<Quiz />} errorElement={<PageNotFound />} path="quiz/:id" />
-            <Route element={<Video />} errorElement={<PageNotFound />} path="video/:id" />
+            <Route
+              element={<Quiz />}
+              errorElement={<PageNotFound />}
+              path="quiz/:id"
+            />
+            <Route
+              element={<Video />}
+              errorElement={<PageNotFound />}
+              path="video/:id"
+            />
             <Route element={<Profile />} path="profile" />
             <Route element={<Submissions />} path="submissions" />
             <Route
@@ -68,7 +80,11 @@ function Root() {
               errorElement={<PageNotFound />}
               path="detailed-submission"
             />
-            <Route element={<Result />} errorElement={<PageNotFound />} path="result/:id" />
+            <Route
+              element={<Result />}
+              errorElement={<PageNotFound />}
+              path="result/:id"
+            />
           </Route>
           <Route element={<PageNotFound />} path="*" />
         </Route>
@@ -77,17 +93,18 @@ function Root() {
   );
 }
 
-const router = createBrowserRouter([{ path: '*', Component: Root }]);
+const router = createBrowserRouter([{ path: "*", Component: Root }]);
 
 function App() {
   // Website theme
   if (
-    localStorage.theme === 'dark' ||
-    (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    localStorage.theme === "dark" ||
+    (!("theme" in localStorage) &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches)
   ) {
-    document.documentElement.classList.add('dark');
+    document.documentElement.classList.add("dark");
   } else {
-    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.remove("dark");
   }
 
   // Preloading state
@@ -99,6 +116,55 @@ function App() {
       setPreloading(false);
     }, 1000);
   }, []);
+
+  // <<<----- LOGIC ĐỒNG BỘ DỮ LIỆU OFFLINE MỚI ----->>>
+  useEffect(() => {
+    const syncData = async () => {
+      console.log("Kiểm tra dữ liệu cần đồng bộ...");
+      const pendingSubmissions = await getPendingProgressFromDB();
+
+      if (pendingSubmissions.length > 0) {
+        console.log(`Tìm thấy ${pendingSubmissions.length} mục cần đồng bộ.`);
+        const db = getDatabase();
+
+        for (const submission of pendingSubmissions) {
+          // Tách submissionId ra khỏi dữ liệu cần đẩy lên Firebase
+          const { userId, submissionId, ...submissionData } = submission;
+          const submissionsKey = push(
+            child(ref(db), `submissions/${userId}`)
+          ).key;
+          const submissionsUpdate = {};
+          submissionsUpdate[`submissions/${userId}/${submissionsKey}`] =
+            submissionData;
+
+          try {
+            // Đẩy dữ liệu lên Firebase
+            await update(ref(db), submissionsUpdate);
+
+            // Nếu thành công, đánh dấu đã đồng bộ trong IndexedDB
+            await markProgressAsSynced(submissionId);
+            console.log(`Đã đồng bộ thành công mục: ${submissionId}`);
+          } catch (error) {
+            console.error(`Lỗi đồng bộ mục ${submissionId}:`, error);
+          }
+        }
+      } else {
+        console.log("Không có dữ liệu mới để đồng bộ.");
+      }
+    };
+
+    // Chạy đồng bộ khi ứng dụng khởi động
+    syncData();
+
+    // Lắng nghe sự kiện khi có kết nối mạng trở lại để chạy đồng bộ
+    window.addEventListener("online", syncData);
+
+    // Dọn dẹp listener khi component không còn được sử dụng
+    return () => {
+      window.removeEventListener("online", syncData);
+    };
+  }, []);
+  // <<<----- KẾT THÚC LOGIC ĐỒNG BỘ ----->>>
 
   return (
     <div>
@@ -112,11 +178,11 @@ function App() {
             position="top-center"
             toastOptions={{
               style: {
-                color: '#000',
+                color: "#000",
                 fontWeight: 600,
-                background: '#44BBA9'
+                background: "#44BBA9",
               },
-              duration: 3000
+              duration: 3000,
             }}
           />
         </AuthProvider>

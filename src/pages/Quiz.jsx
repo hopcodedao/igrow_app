@@ -1,6 +1,5 @@
 // src/pages/Quiz.jsx
 
-import { child, get, getDatabase, push, ref, update } from "firebase/database";
 import _ from "lodash";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,6 +9,7 @@ import successSound from '../assets/success.mp3';
 import { AnswerBox, ProgressBar, Rules } from "../components";
 import { useAuth } from "../contexts/AuthContext";
 import { useQuiz } from "../hooks";
+import { saveProgressToDB } from '../utils/db'; // <-- Nhập hàm lưu tiến độ
 
 const initialState = null;
 
@@ -53,7 +53,6 @@ function Quiz() {
     });
   }, [quiz]);
 
-  // Answer option selection
   const handleAnswerChange = useCallback(
     (e, index) => {
       dispatch({
@@ -71,13 +70,11 @@ function Quiz() {
     handleAnswerChange(e, index);
   };
 
-
   const playSound = () => {
     const audio = new Audio(successSound);
     audio.play().catch(error => console.error("Error playing sound:", error));
   };
   
-  // Get next question
   const nextQuestion = useCallback(() => {
     if (answerSelected) {
       playSound();
@@ -89,18 +86,16 @@ function Quiz() {
     setAnswerSelected(false);
   }, [currentQuestion, qnaSet, answerSelected]);
 
-  // Get previous question
   const previousQuestion = useCallback(() => {
     if (currentQuestion >= 1 && currentQuestion <= qnaSet.length)
       setCurrentQuestion((curr) => curr - 1);
   }, [currentQuestion, qnaSet]);
 
-  // Progress percentage
   const progressPercentage =
     qnaSet?.length > 0 ? ((currentQuestion + 1) * 100) / qnaSet.length : 0;
 
-  // Submit Quiz and store result in the database
-  const submitQuiz = useCallback(async () => {
+  // Đổi tên và logic hàm để lưu vào DB cục bộ
+  const completeLesson = useCallback(async () => {
     function getMarkSheet() {
       let correctAnswersCount = 0;
       let incorrectAnswersCount = 0;
@@ -124,7 +119,7 @@ function Quiz() {
       const noq = qnaSet?.length;
       const obtainedPoints =
         correctAnswersCount * 10 - incorrectAnswersCount * 2;
-      const obtainedPercentage = obtainedPoints / (0.1 * noq);
+      const obtainedPercentage = noq > 0 ? (obtainedPoints / (noq * 10)) * 100 : 0;
 
       return [
         noq,
@@ -146,6 +141,7 @@ function Quiz() {
     ] = getMarkSheet();
 
     const markSheetObject = {
+      userId: currentUser.uid,
       topicId: id,
       date: date.toLocaleDateString("en-IN"),
       time: `${date.getHours() % 12 || 12}:${date.getMinutes().toString().padStart(2, "0")} ${
@@ -160,32 +156,14 @@ function Quiz() {
       qnaSet: { ...qnaSet },
     };
 
-    const { uid } = currentUser;
-    const db = getDatabase();
-    const submissionsKey = push(child(ref(db), `submissions/${uid}`)).key;
-    const submissionsData = {};
-
-    submissionsData[`submissions/${uid}/${submissionsKey}`] = markSheetObject;
     try {
-      // Update submission data in the database
-      await update(ref(db), submissionsData);
-
-      // Manually increase submission count
-      const submissionCountRef = ref(db, "submissionCount");
-      const snapshot = await get(submissionCountRef);
-      if (snapshot.exists()) {
-        const currentSubmissionCount = snapshot.val()[id] || 0;
-        const updatedSubmissionCount = currentSubmissionCount + 1;
-
-        await update(submissionCountRef, {
-          [id]: updatedSubmissionCount,
-        });
-      }
-
-      // Navigate to the result page
-      navigate(`/result/${id}`, { state: { qnaSet, markSheetObject } });
+        // LƯU VÀO INDEXEDDB
+        await saveProgressToDB(markSheetObject);
+        
+        // Điều hướng đến trang kết quả để người dùng xem điểm
+        navigate(`/result/${id}`, { state: { qnaSet, markSheetObject } });
     } catch (error) {
-      console.error("Lỗi khi nộp bài học:", error);
+        console.error("Lỗi khi lưu bài học:", error);
     }
   }, [currentUser, date, id, navigate, qnaSet]);
 
@@ -226,7 +204,7 @@ function Quiz() {
             nextQ={nextQuestion}
             prevQ={previousQuestion}
             progress={progressPercentage}
-            submit={submitQuiz}
+            submit={completeLesson}
           />
         </div>
       )}

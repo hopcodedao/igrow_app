@@ -1,5 +1,7 @@
+// src/hooks/useQuiz.js
 import { get, getDatabase, orderByKey, query, ref } from 'firebase/database';
 import { useEffect, useState } from 'react';
+import { getCourseFromDB, saveCourseToDB } from '../utils/db';
 
 export default function useQuiz(topicID) {
   const [loading, setLoading] = useState(true);
@@ -7,25 +9,41 @@ export default function useQuiz(topicID) {
   const [quiz, setQuiz] = useState([]);
 
   useEffect(() => {
-    // Fetch question-answer sets from database
     async function fetchQuestions() {
-      const db = getDatabase();
-      const quizRef = ref(db, `quizzes/${topicID}/questions`);
-      const quizQuery = query(quizRef, orderByKey());
+      setLoading(true);
+      setError(false);
 
       try {
-        setError(false);
-        setLoading(true);
+        // Bước 1: Thử lấy dữ liệu từ IndexedDB trước
+        const localData = await getCourseFromDB(topicID);
+        if (localData) {
+          setQuiz(Object.values(localData.questions));
+          setLoading(false);
+        }
 
-        // Request to firebase database
+        // Bước 2: Vẫn gọi Firebase để lấy dữ liệu mới nhất
+        const db = getDatabase();
+        const quizRef = ref(db, `quizzes/${topicID}`);
+        const quizQuery = query(quizRef, orderByKey());
+
         const snapshot = await get(quizQuery);
-        setLoading(false);
 
-        if (snapshot.exists())
-          setQuiz((prevQuestions) => [...prevQuestions, ...Object.values(snapshot.val())]);
+        if (snapshot.exists()) {
+          const remoteData = snapshot.val();
+
+          remoteData.topicID = topicID;
+          
+          setQuiz(Object.values(remoteData.questions));
+          await saveCourseToDB(remoteData);
+        } else if (!localData) {
+          // Nếu không có cả local và remote data
+          setError(true);
+        }
       } catch (err) {
+        console.error(err);
+        if (!quiz.length) setError(true);
+      } finally {
         setLoading(false);
-        setError(true);
       }
     }
 
