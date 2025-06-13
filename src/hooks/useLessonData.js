@@ -2,8 +2,6 @@
 import { get, getDatabase, ref } from 'firebase/database';
 import { useEffect, useState } from 'react';
 
-// Ta không cần logic offline ở đây vì dữ liệu bài học có thể đã được
-// tải về cùng với toàn bộ khóa học.
 export default function useLessonData(lessonId) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -17,6 +15,7 @@ export default function useLessonData(lessonId) {
         const db = getDatabase();
         const lessonRef = ref(db, `lessons/${lessonId}`);
         const snapshot = await get(lessonRef);
+
         if (snapshot.exists()) {
           setLesson(snapshot.val());
         } else {
@@ -32,6 +31,9 @@ export default function useLessonData(lessonId) {
 
     if (lessonId) {
       fetchLesson();
+    } else {
+      setLoading(false);
+      setError(true);
     }
   }, [lessonId]);
 
