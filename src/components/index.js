@@ -26,7 +26,7 @@ export { default as ContactUs } from './common/ContactUs';
 export { default as DetailedReport } from './common/DetailedReport';
 export { default as Footer } from './common/Footer';
 export { default as MainNavigationBar } from './common/MainNavigationBar';
-export { default as PopularQuizzes } from './common/PopularQuizzes';
+export { default as FeaturedCourses } from './common/FeaturedCourses'; 
 export { default as ProgressBar } from './common/ProgressBar';
 export { default as ResultSummary } from './common/ResultSummary';
 export { default as SubNavigationBar } from './common/SubNavigationBar';

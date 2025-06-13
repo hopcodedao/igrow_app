@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { coding, hero } from '../assets';
-import { BasicInfo, ContactUs, Footer, PopularQuizzes } from '../components';
+import { BasicInfo, ContactUs, Footer, FeaturedCourses} from '../components';
 
 function Home() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -41,7 +41,7 @@ function Home() {
       </div>
 
       <BasicInfo />
-      <PopularQuizzes />
+      <FeaturedCourses />
       <ContactUs />
       <Footer />
     </div>
