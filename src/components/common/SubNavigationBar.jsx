@@ -36,14 +36,14 @@ function SubNavigationBar({ className }) {
           to="/quizzes"
           onClick={handleLinkClick}
         >
-          <NavButton text="Thi trắc nghiệm" />
+          <NavButton text="Khóa học" />
         </NavLink>
         <NavLink
           className={({ isActive }) => (isActive ? "active-page" : null)}
           to="/learn"
           onClick={handleLinkClick}
         >
-          <NavButton text="Videos" />
+          <NavButton text="Thư viện" />
         </NavLink>
         <NavLink
           className={({ isActive }) => (isActive ? "active-page" : null)}

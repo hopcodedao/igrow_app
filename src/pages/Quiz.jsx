@@ -185,7 +185,7 @@ function Quiz() {
       // Navigate to the result page
       navigate(`/result/${id}`, { state: { qnaSet, markSheetObject } });
     } catch (error) {
-      console.error("Lỗi khi nộp bài kiểm tra:", error);
+      console.error("Lỗi khi nộp bài học:", error);
     }
   }, [currentUser, date, id, navigate, qnaSet]);
 
@@ -196,7 +196,7 @@ function Quiz() {
       {!loading && !error && qnaSet && qnaSet?.length === 0 && <PageNotFound />}
       {!loading && !error && qnaSet && qnaSet?.length > 0 && (
         <div className="mx-auto w-[85%] animate-reveal">
-          <h1 className="page-heading">Làm bài thi</h1>
+          <h1 className="page-heading">Bắt đầu bài học</h1>
           <Rules />
           <div className="card mb-40 flex flex-col justify-center rounded-md p-3">
             <div className="flex flex-col items-center justify-center text-xl font-bold text-black dark:text-white sm:text-3xl">

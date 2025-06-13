@@ -53,7 +53,7 @@ function Result() {
                 title="Retry Quiz"
                 type="button"
               >
-                Làm lại
+                Học lại
               </button>
             </Link>
           </div>

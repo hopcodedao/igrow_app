@@ -28,7 +28,7 @@ function Quizzes() {
   return (
     <>
       <div className="mx-auto mb-32 flex min-h-screen w-[90%] animate-reveal flex-col items-center">
-        <h1 className="page-heading">Chọn chủ đề thi</h1>
+        <h1 className="page-heading">Chọn khóa học để bắt đầu</h1>
         {shuffledData.length > 0 && (
           <div className="mx-auto grid h-full w-full grid-cols-quizzes justify-items-center gap-7">
             {shuffledData.map((topic, index) =>

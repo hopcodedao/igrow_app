@@ -33,14 +33,10 @@ function Home() {
 
       <div className="mx-8 flex flex-col items-center justify-center gap-2">
         <p className="page-heading my-8 mt-10 text-center text-3xl font-bold uppercase text-black dark:text-white md:text-5xl">
-          AN TOÀN GIAO THÔNG
-          <span className="my-5 block text-center text-primary drop-shadow-2xl">
-            ĐỀ PHÒNG TAI NẠN
-          </span>
-          Thượng tôn pháp luật để xây dựng văn hoá giao thông an toàn!
+          Trao quyền kỹ năng số và tư duy khởi nghiệp cho thanh niên dân tộc thiểu số
         </p>
         <p className="rounded-lg bg-primary px-4 py-2 text-center font-semibold tracking-wide text-black md:text-xl">
-          ATGTech được xây dựng nhằm mục đích tăng cường công tác tuyên truyền, phổ biến pháp luật về trật tự, an toàn giao thông; nâng cao kiến thức và ý thức chấp hành pháp luật về trật tự, an toàn giao thông cho mọi người dân; góp phần xây dựng văn hóa ứng xử khi tham gia giao thông
+          iGrow là dự án cung cấp các chương trình đào tạo cá nhân hóa, phù hợp với văn hóa và điều kiện đặc thù của thanh niên dân tộc thiểu số tại vùng Đồng bằng sông Cửu Long và tiến tới mở rộng ra cả nước
         </p>
       </div>
 

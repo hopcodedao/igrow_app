@@ -12,9 +12,9 @@
         },
 
         colors: {
-          primary: '#00a9d4',
-          'primary-darker': '#067af1',
-          secondary: '#47b0e9',
+          primary: '#22C55E',
+          'primary-darker': '#16A34A',
+          secondary: '#22C55E',
           light: '#F8FCFB',
           dark: '#030707'
         },

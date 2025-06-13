@@ -11,9 +11,9 @@ function Footer() {
       <div className="md:mr-10 md:flex md:justify-between">
         <div className="-ml-1 mb-6 md:mb-0">
           <Link className="flex items-center" to="/">
-            <img alt="ATGTech Logo" className="mr-1 h-8 rounded-full sm:h-9" src={logo} />
+            <img alt="iGrow Logo" className="mr-1 h-8 rounded-full sm:h-9" src={logo} />
             <span className="self-center whitespace-nowrap text-xl font-semibold text-primary sm:text-2xl">
-              ATGTECH
+              iGrow
             </span>
           </Link>
         </div>
@@ -69,15 +69,15 @@ function Footer() {
               target="_blank"
               onClick={() => gaEventTracker({ label: 'Hoa Hop' })}
             >
-              ATGTech.
+              iGrow.
             </a>
           </span>
           <span>
             © 2024{' '}
             <Link className="hover:underline" to="/">
-              ATGTech.
+              iGrow.
             </Link>
-            &ensp;All Rights Reserved.
+            &ensp;Bản quyền thuộc về Nhóm Empower.
           </span>
         </div>
         <div className="mx-auto mt-4 flex w-fit space-x-6 sm:justify-center md:mx-0 md:mt-0">

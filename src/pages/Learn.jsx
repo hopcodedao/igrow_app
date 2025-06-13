@@ -23,7 +23,7 @@ function Learn() {
   return (
     <>
       <div className="mx-auto mb-32 flex min-h-screen w-[90%] animate-reveal flex-col items-center">
-        <h1 className="page-heading">Tuyên truyền ATGT</h1>
+        <h1 className="page-heading">Tài liệu tham khảo</h1>
 
         <div className="mx-auto grid w-full grid-cols-quizzes justify-items-center gap-5">
           {shuffledData.map((video, index) => (
