@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
-import { Toaster } from "react-hot-toast";
+// src/App.jsx
 
+// React & Router imports
+import { useEffect, useState } from "react";
 import {
   Route,
   RouterProvider,
@@ -8,7 +9,13 @@ import {
   ScrollRestoration,
   createBrowserRouter,
 } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
+// Firebase and Offline DB imports
+import { getDatabase, ref, push, update, child } from "firebase/database";
+import { getPendingProgressFromDB, markProgressAsSynced } from "./utils/db";
+
+// App Components
 import {
   DesignComponent,
   GoogleAnalytics,
@@ -17,33 +24,27 @@ import {
   PrivateOutlet,
   PublicOutlet,
 } from "./components";
-// eslint-disable-next-line import/order
+import ChatAI from './components/ChatAI';
 import { AuthProvider } from "./contexts/AuthContext";
 
-// Logic đồng bộ dữ liệu Offline
-import { getDatabase, ref, push, update, child } from "firebase/database";
-import { getPendingProgressFromDB, markProgressAsSynced } from "./utils/db";
-
-// Website Pages
+// App Pages
 import {
   About,
+  CourseDetail,
+  Courses,
   DetailedSubmission,
   Home,
   Learn,
+  Lesson,
   Login,
   PageNotFound,
   Profile,
-  Quiz,
-  Quizzes,
   Reset,
   Result,
   SignUp,
   Submissions,
   Video,
 } from "./pages";
-
-// Make sure you only have one import like this:
-import ChatAI from "./components/ChatAI"; // This should only appear once
 
 function Root() {
   return (
@@ -53,7 +54,7 @@ function Root() {
       <Routes>
         <Route element={<MainNavigationBar />}>
           <Route element={<Home />} path="/" />
-          <Route element={<Quizzes />} path="/quizzes" />
+          <Route element={<Courses />} path="/courses" />
           <Route element={<About />} path="/about" />
           <Route element={<ChatAI />} path="/chat-ai" />
           <Route element={<Reset />} path="/reset" />
@@ -63,10 +64,11 @@ function Root() {
             <Route element={<Login />} path="login" />
           </Route>
           <Route element={<PrivateOutlet />} path="/">
+            <Route element={<CourseDetail />} path="/course/:courseId" />
             <Route
-              element={<Quiz />}
+              element={<Lesson />}
               errorElement={<PageNotFound />}
-              path="quiz/:id"
+              path="/lesson/:lessonId"
             />
             <Route
               element={<Video />}
@@ -117,7 +119,7 @@ function App() {
     }, 1000);
   }, []);
 
-  // <<<----- LOGIC ĐỒNG BỘ DỮ LIỆU OFFLINE MỚI ----->>>
+  // <<<----- LOGIC ĐỒNG BỘ DỮ LIỆU OFFLINE ----->>>
   useEffect(() => {
     const syncData = async () => {
       console.log("Kiểm tra dữ liệu cần đồng bộ...");
@@ -128,20 +130,14 @@ function App() {
         const db = getDatabase();
 
         for (const submission of pendingSubmissions) {
-          // Tách submissionId ra khỏi dữ liệu cần đẩy lên Firebase
           const { userId, submissionId, ...submissionData } = submission;
           const submissionsKey = push(
             child(ref(db), `submissions/${userId}`)
           ).key;
           const submissionsUpdate = {};
-          submissionsUpdate[`submissions/${userId}/${submissionsKey}`] =
-            submissionData;
-
+          submissionsUpdate[`submissions/${userId}/${submissionsKey}`] = submissionData;
           try {
-            // Đẩy dữ liệu lên Firebase
             await update(ref(db), submissionsUpdate);
-
-            // Nếu thành công, đánh dấu đã đồng bộ trong IndexedDB
             await markProgressAsSynced(submissionId);
             console.log(`Đã đồng bộ thành công mục: ${submissionId}`);
           } catch (error) {
@@ -153,13 +149,8 @@ function App() {
       }
     };
 
-    // Chạy đồng bộ khi ứng dụng khởi động
     syncData();
-
-    // Lắng nghe sự kiện khi có kết nối mạng trở lại để chạy đồng bộ
     window.addEventListener("online", syncData);
-
-    // Dọn dẹp listener khi component không còn được sử dụng
     return () => {
       window.removeEventListener("online", syncData);
     };

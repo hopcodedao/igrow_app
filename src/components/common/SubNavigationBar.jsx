@@ -33,7 +33,7 @@ function SubNavigationBar({ className }) {
         </NavLink>
         <NavLink
           className={({ isActive }) => (isActive ? "active-page" : null)}
-          to="/quizzes"
+          to="/courses"
           onClick={handleLinkClick}
         >
           <NavButton text="Khóa học" />
