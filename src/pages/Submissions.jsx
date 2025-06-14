@@ -13,7 +13,7 @@ function Submissions() {
 
   return (
     <div className="mx-auto flex w-[85%] animate-reveal flex-col items-center justify-center sm:text-xl">
-      <h1 className="page-heading">Lịch sử thi trắc nghiệm</h1>
+      <h1 className="page-heading">Lịch sử học tập</h1>
 
       <div className="flex w-full flex-col-reverse text-center">
         {submissions.map((submission, index) => (

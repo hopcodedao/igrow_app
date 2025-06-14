@@ -1,14 +1,14 @@
 // src/pages/admin/CourseForm.jsx
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
-import { getDatabase, ref, set, get } from 'firebase/database';
-import { useAlert } from '../../hooks';
+import { useState, useEffect } from "react";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import { getDatabase, ref, set, get } from "firebase/database";
+import { useAlert } from "../../hooks";
 
 const initialCourseState = {
-  topicID: '',
-  title: '',
-  description: '',
-  thumbnail: '',
+  topicID: "",
+  title: "",
+  description: "",
+  thumbnail: "",
   modules: [],
 };
 
@@ -29,10 +29,13 @@ function CourseForm() {
         if (snapshot.exists()) {
           const data = snapshot.val();
           // Chuyển đổi modules thành chuỗi JSON để dễ chỉnh sửa trong textarea
-          setCourseData({ ...data, modules: JSON.stringify(data.modules || [], null, 2) });
+          setCourseData({
+            ...data,
+            modules: JSON.stringify(data.modules || [], null, 2),
+          });
         } else {
-          useAlert('error', 'Không tìm thấy khóa học.');
-          navigate('/admin/courses');
+          useAlert("error", "Không tìm thấy khóa học.");
+          navigate("/admin/courses");
         }
       });
     }
@@ -40,7 +43,7 @@ function CourseForm() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCourseData(prev => ({ ...prev, [name]: value }));
+    setCourseData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -52,9 +55,9 @@ function CourseForm() {
       // Lấy ID từ form state, đảm bảo không có khoảng trắng hoặc ký tự đặc biệt
       const finalId = courseData.topicID.trim().toLowerCase();
       if (!finalId) {
-          useAlert('error', 'ID khóa học là bắt buộc.');
-          setLoading(false);
-          return;
+        useAlert("error", "ID khóa học là bắt buộc.");
+        setLoading(false);
+        return;
       }
 
       const finalData = { ...courseData };
@@ -62,7 +65,7 @@ function CourseForm() {
       try {
         finalData.modules = JSON.parse(courseData.modules);
       } catch (jsonError) {
-        useAlert('error', 'Cấu trúc JSON của modules không hợp lệ.');
+        useAlert("error", "Cấu trúc JSON của modules không hợp lệ.");
         setLoading(false);
         return;
       }
@@ -70,12 +73,14 @@ function CourseForm() {
       const courseRef = ref(db, `courses/${finalId}`);
       await set(courseRef, finalData);
 
-      useAlert('success', `Đã ${isEditMode ? 'cập nhật' : 'tạo mới'} khóa học thành công!`);
-      navigate('/admin/courses');
-
+      useAlert(
+        "success",
+        `Đã ${isEditMode ? "cập nhật" : "tạo mới"} khóa học thành công!`
+      );
+      navigate("/admin/courses");
     } catch (error) {
       console.error("Lỗi khi lưu khóa học:", error);
-      useAlert('error', 'Đã có lỗi xảy ra.');
+      useAlert("error", "Đã có lỗi xảy ra.");
     } finally {
       setLoading(false);
     }
@@ -84,12 +89,15 @@ function CourseForm() {
   return (
     <div className="card p-6">
       <h1 className="text-3xl font-bold mb-6">
-        {isEditMode ? 'Chỉnh sửa Khóa học' : 'Tạo Khóa học mới'}
+        {isEditMode ? "Chỉnh sửa Khóa học" : "Tạo Khóa học mới"}
       </h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="mb-2 block font-semibold">ID Khóa học (slug)</label>
+          <label htmlFor="topicID" className="mb-2 block font-semibold">
+            ID Khóa học (slug)
+          </label>
           <input
+            id="topicID"
             name="topicID"
             value={courseData.topicID}
             onChange={handleInputChange}
@@ -98,11 +106,18 @@ function CourseForm() {
             required
             disabled={isEditMode} // Không cho sửa ID ở chế độ edit
           />
-          {isEditMode && <small className="text-gray-500">Không thể thay đổi ID của khóa học đã tồn tại.</small>}
+          {isEditMode && (
+            <small className="text-gray-500">
+              Không thể thay đổi ID của khóa học đã tồn tại.
+            </small>
+          )}
         </div>
         <div>
-          <label className="mb-2 block font-semibold">Tiêu đề</label>
+          <label htmlFor="title" className="mb-2 block font-semibold">
+            Tiêu đề
+          </label>
           <input
+            id="title"
             name="title"
             value={courseData.title}
             onChange={handleInputChange}
@@ -112,8 +127,11 @@ function CourseForm() {
           />
         </div>
         <div>
-          <label className="mb-2 block font-semibold">Mô tả</label>
+          <label htmlFor="description" className="mb-2 block font-semibold">
+            Mô tả
+          </label>
           <textarea
+            id="description"
             name="description"
             value={courseData.description}
             onChange={handleInputChange}
@@ -122,8 +140,11 @@ function CourseForm() {
           />
         </div>
         <div>
-          <label className="mb-2 block font-semibold">URL Ảnh bìa (Thumbnail)</label>
+          <label htmlFor="thumbnail" className="mb-2 block font-semibold">
+            URL Ảnh bìa (Thumbnail)
+          </label>
           <input
+            id="thumbnail"
             name="thumbnail"
             value={courseData.thumbnail}
             onChange={handleInputChange}
@@ -132,21 +153,36 @@ function CourseForm() {
           />
         </div>
         <div>
-            <label className="mb-2 block font-semibold">Cấu trúc Modules và Lessons (JSON)</label>
-            <textarea
-                name="modules"
-                value={courseData.modules}
-                onChange={handleInputChange}
-                className="w-full rounded-md border p-3 font-mono text-sm dark:bg-dark"
-                rows="15"
-                placeholder='Dán cấu trúc JSON của bạn vào đây...'
-            />
-            <small className="text-gray-500">Chỉnh sửa cấu trúc khóa học trực tiếp dưới dạng JSON. Hãy cẩn thận với cú pháp.</small>
+          <label htmlFor="modules" className="mb-2 block font-semibold">
+            Cấu trúc Modules và Lessons (JSON)
+          </label>
+          <textarea
+            id="modules"
+            name="modules"
+            value={courseData.modules}
+            onChange={handleInputChange}
+            className="w-full rounded-md border p-3 font-mono text-sm dark:bg-dark"
+            rows="15"
+            placeholder="Dán cấu trúc JSON của bạn vào đây..."
+          />
+          <small className="text-gray-500">
+            Chỉnh sửa cấu trúc khóa học trực tiếp dưới dạng JSON. Hãy cẩn thận
+            với cú pháp.
+          </small>
         </div>
         <div className="flex justify-end gap-4">
-          <Link to="/admin/courses" className="border-button rounded-lg px-6 py-2">Hủy</Link>
-          <button type="submit" className="fill-button px-6 py-2" disabled={loading}>
-            {loading ? 'Đang lưu...' : 'Lưu Khóa học'}
+          <Link
+            to="/admin/courses"
+            className="border-button rounded-lg px-6 py-2"
+          >
+            Hủy
+          </Link>
+          <button
+            type="submit"
+            className="fill-button px-6 py-2"
+            disabled={loading}
+          >
+            {loading ? "Đang lưu..." : "Lưu Khóa học"}
           </button>
         </div>
       </form>

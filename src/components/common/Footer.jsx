@@ -21,10 +21,10 @@ function Footer() {
           <div className="flex flex-col gap-4">
             <h2 className="text-sm font-semibold uppercase">Danh mục</h2>
             <Link className="hover:underline" to="/quizzes">
-              Thi trắc nghiệm
+              Khoá học
             </Link>
             <Link className="hover:underline" to="/learn">
-              Videos
+              Thư viện
             </Link>
           </div>
           <div className="flex flex-col gap-4">
