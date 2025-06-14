@@ -1,5 +1,4 @@
 // src/components/atoms/AnswerBox.jsx
-import React from 'react';
 
 function AnswerBox({ options, handleChange }) {
   // Hàm chuyển đổi chỉ số thành chữ cái (A, B, C, ...)

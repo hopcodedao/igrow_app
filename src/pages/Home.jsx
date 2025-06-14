@@ -34,17 +34,18 @@ function Home() {
 
       <div className="mx-8 flex flex-col items-center justify-center gap-2">
         <p className="page-heading pt-2 my-4 text-center text-2xl font-extrabold uppercase text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500 drop-shadow-lg md:text-2xl lg:text-5xl">
-  {/* Áp dụng văn bản gradient và đổ bóng để nổi bật */}
-  Trao quyền kỹ năng số và tư duy khởi nghiệp cho thanh niên dân tộc thiểu số
-</p>
+          {/* Áp dụng văn bản gradient và đổ bóng để nổi bật */}
+          Trao quyền kỹ năng số và tư duy khởi nghiệp cho thanh niên dân tộc
+          thiểu số
+        </p>
 
         <p className="rounded-xl bg-gradient-to-r from-primary to-secondary px-6 py-3 text-center text-white font-semibold tracking-wide md:text-2xl shadow-lg">
           {" "}
           {/* Sử dụng nền gradient cho vẻ ngoài hiện đại hơn, tăng kích thước văn bản, thêm đổ bóng */}
-                    iGrow là dự án cung cấp các chương trình đào tạo cá nhân
+          iGrow là dự án cung cấp các chương trình đào tạo cá nhân
           hóa, phù hợp với văn hóa và điều kiện đặc thù của thanh niên dân tộc
           thiểu số tại vùng Đồng bằng sông Cửu Long và tiến tới mở rộng ra cả
-          nước        {" "}
+          nước{" "}
         </p>
       </div>
 

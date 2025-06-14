@@ -5,7 +5,7 @@ import { DetailedReport, ResultSummary } from '../components';
 
 function Result() {
   const location = useLocation();
-  const { qnaSet, markSheetObject } = location.state;
+  const { qnaSet, markSheetObject, topicTitle } = location.state; // ✅ Nhận topicTitle từ location.state
   const [showAnswers, setShowAnswers] = useState(false);
 
   const {
@@ -16,7 +16,7 @@ function Result() {
     unattemptedCount,
     obtainedPoints,
     obtainedPercentage,
-    date
+    date,
   } = markSheetObject;
 
   return (
@@ -32,6 +32,7 @@ function Result() {
             obtainedPercentage={obtainedPercentage}
             obtainedPoints={obtainedPoints}
             topicId={topicId}
+            topicTitle={topicTitle} // ✅ Truyền topicTitle xuống ResultSummary
             unattemptedCount={unattemptedCount}
           />
 
@@ -39,7 +40,7 @@ function Result() {
             {!showAnswers && (
               <button
                 className="border-button rounded-md border-2 border-primary px-4 py-2 font-medium uppercase"
-                title="See Answers"
+                title="Xem đáp án"
                 type="button"
                 onClick={() => setShowAnswers(true)}
               >
@@ -50,7 +51,7 @@ function Result() {
             <Link to={`/quiz/${topicId}`}>
               <button
                 className="border-button rounded-md border-2 border-primary px-4 py-2 font-medium uppercase"
-                title="Retry Quiz"
+                title="Học lại"
                 type="button"
               >
                 Học lại

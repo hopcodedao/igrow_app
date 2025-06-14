@@ -2,7 +2,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useCertificate } from "../../hooks";
 
 function ScoreCard({
-  topicId,
+  topicTitle, // ✅ Thêm topicTitle ở props
   location,
   noq,
   date,
@@ -68,7 +68,7 @@ function ScoreCard({
           onClick={() =>
             useCertificate(
               currentUser.displayName,
-              topicId,
+              topicTitle, // ✅ Truyền topicTitle thay vì topicId
               obtainedPercentage,
               date
             )

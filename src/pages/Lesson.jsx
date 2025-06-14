@@ -10,7 +10,7 @@ import { useAuth } from "../contexts/AuthContext";
 import useLessonData from "../hooks/useLessonData";
 import { saveProgressToDB } from "../utils/db";
 import { checkAndAwardBadges } from "../utils/gamification";
-import successSound from '../assets/success.mp3';
+import successSound from "../assets/success.mp3";
 
 const initialState = [];
 
@@ -74,25 +74,33 @@ function Lesson() {
   }, [lesson]);
 
   // handleAnswerChange đã được sửa đổi để chỉ nhận chỉ mục
-  const handleAnswerChange = useCallback((index) => {
-    dispatch({
-      type: "answer",
-      questionID: currentQuestion,
-      optionIndex: index,
-    });
-  }, [currentQuestion]);
+  const handleAnswerChange = useCallback(
+    (index) => {
+      dispatch({
+        type: "answer",
+        questionID: currentQuestion,
+        optionIndex: index,
+      });
+    },
+    [currentQuestion]
+  );
 
-  const onAnswerSelected = (index) => { // Đổi tên từ e, index thành chỉ index
+  const onAnswerSelected = (index) => {
+    // Đổi tên từ e, index thành chỉ index
     handleAnswerChange(index);
   };
 
   const nextQuestion = useCallback(() => {
     const currentQData = qnaSet[currentQuestion];
     // Kiểm tra trực tiếp từ qnaSet xem có tùy chọn nào được chọn không
-    const isAnyOptionChecked = currentQData?.options.some(option => option.checked);
+    const isAnyOptionChecked = currentQData?.options.some(
+      (option) => option.checked
+    );
 
     if (isAnyOptionChecked && currentQuestion < qnaSet.length - 1) {
-      successAudio.play().catch(e => console.error("Error playing sound:", e));
+      successAudio
+        .play()
+        .catch((e) => console.error("Error playing sound:", e));
       setCurrentQuestion((curr) => curr + 1);
     }
   }, [currentQuestion, qnaSet, successAudio]);
@@ -101,7 +109,8 @@ function Lesson() {
     if (currentQuestion >= 1) setCurrentQuestion((curr) => curr - 1);
   }, [currentQuestion]);
 
-  const progressPercentage = qnaSet?.length > 0 ? ((currentQuestion + 1) * 100) / qnaSet.length : 0;
+  const progressPercentage =
+    qnaSet?.length > 0 ? ((currentQuestion + 1) * 100) / qnaSet.length : 0;
 
   const completeLesson = useCallback(async () => {
     function getMarkSheet() {
@@ -116,31 +125,60 @@ function Lesson() {
           if (option.checked) checkedIndexes.push(index2);
         });
         if (checkedIndexes.length === 0) unattemptedCount += 1;
-        else if (_.isEqual(correctIndexes, checkedIndexes)) correctAnswersCount += 1;
+        else if (_.isEqual(correctIndexes, checkedIndexes))
+          correctAnswersCount += 1;
         else incorrectAnswersCount += 1;
       });
       const noq = qnaSet?.length;
-      const obtainedPoints = correctAnswersCount * 10 - incorrectAnswersCount * 2;
-      const obtainedPercentage = noq > 0 ? (obtainedPoints / (noq * 10)) * 100 : 0;
-      return [noq, correctAnswersCount, incorrectAnswersCount, unattemptedCount, obtainedPoints, obtainedPercentage];
+      const obtainedPoints =
+        correctAnswersCount * 10 - incorrectAnswersCount * 2;
+      const obtainedPercentage =
+        noq > 0 ? (obtainedPoints / (noq * 10)) * 100 : 0;
+      return [
+        noq,
+        correctAnswersCount,
+        incorrectAnswersCount,
+        unattemptedCount,
+        obtainedPoints,
+        obtainedPercentage,
+      ];
     }
 
-    const [noq, correctAnswersCount, incorrectAnswersCount, unattemptedCount, obtainedPoints, obtainedPercentage] = getMarkSheet();
+    const [
+      noq,
+      correctAnswersCount,
+      incorrectAnswersCount,
+      unattemptedCount,
+      obtainedPoints,
+      obtainedPercentage,
+    ] = getMarkSheet();
 
     const markSheetObject = {
       userId: currentUser.uid,
       topicId: lesson.topicId || lessonId,
-      lessonId: lessonId,
+      topicTitle: lesson.title, // ✅ THÊM topicTitle
+      lessonId,
       date: date.toLocaleDateString("en-IN"),
       time: `${date.getHours() % 12 || 12}:${date.getMinutes().toString().padStart(2, "0")} ${date.getHours() < 12 ? "AM" : "PM"}`,
-      noq, correctAnswersCount, incorrectAnswersCount, unattemptedCount, obtainedPoints, obtainedPercentage,
+      noq,
+      correctAnswersCount,
+      incorrectAnswersCount,
+      unattemptedCount,
+      obtainedPoints,
+      obtainedPercentage,
       qnaSet: { ...qnaSet },
     };
 
     try {
       await saveProgressToDB(markSheetObject);
       await checkAndAwardBadges(currentUser.uid, markSheetObject);
-      navigate(`/result/${lessonId}`, { state: { qnaSet, markSheetObject } });
+      navigate(`/result/${lessonId}`, {
+        state: {
+          qnaSet,
+          markSheetObject,
+          topicTitle: lesson.title, // ✅ TRUYỀN topicTitle qua state
+        },
+      });
     } catch (err) {
       console.error("Lỗi khi lưu bài học:", err);
     }
@@ -188,16 +226,28 @@ function Lesson() {
                 <div className="flex flex-col items-center justify-center text-xl font-bold text-black dark:text-white sm:text-3xl">
                   {qnaSet[currentQuestion]?.title}
                   {qnaSet[currentQuestion]?.image && (
-                    <img src={qnaSet[currentQuestion].image} alt="Minh họa" className="my-4 max-h-64 object-contain" />
+                    <img
+                      src={qnaSet[currentQuestion].image}
+                      alt="Minh họa"
+                      className="my-4 max-h-64 object-contain"
+                    />
                   )}
                 </div>
                 <hr className="mb-8 mt-3 h-px border-0 bg-primary" />
                 {/* Truyền các tùy chọn của câu hỏi hiện tại và trình xử lý đã sửa đổi */}
                 {qnaSet[currentQuestion] && (
-                  <AnswerBox handleChange={onAnswerSelected} options={qnaSet[currentQuestion].options} />
+                  <AnswerBox
+                    handleChange={onAnswerSelected}
+                    options={qnaSet[currentQuestion].options}
+                  />
                 )}
               </div>
-              <ProgressBar nextQ={nextQuestion} prevQ={previousQuestion} progress={progressPercentage} submit={completeLesson} />
+              <ProgressBar
+                nextQ={nextQuestion}
+                prevQ={previousQuestion}
+                progress={progressPercentage}
+                submit={completeLesson}
+              />
             </>
           ) : (
             <div className="flex justify-center">

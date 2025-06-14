@@ -1,32 +1,31 @@
-import { useParams } from 'react-router-dom';
-
-import { ScoreCard } from '..';
+import { ScoreCard } from "..";
 
 function ResultSummary({
   showTopicID = false,
   topicId,
+  topicTitle, // ✅ Thêm topicTitle
   noq,
   correctAnswersCount,
   incorrectAnswersCount,
   unattemptedCount,
   obtainedPoints,
   obtainedPercentage,
-  date
+  date,
 }) {
-  const { id } = useParams();
   return (
     <div className="mx-auto">
       {showTopicID && <h1 className="page-heading">TỔNG KẾT</h1>}
       <ScoreCard
-        correctAnswersCount={correctAnswersCount}
-        date={date}
-        incorrectAnswersCount={incorrectAnswersCount}
+        topicId={topicId}
+        topicTitle={topicTitle} // ✅ Truyền topicTitle vào ScoreCard
         location="result"
         noq={noq}
-        obtainedPercentage={obtainedPercentage}
-        obtainedPoints={obtainedPoints}
-        topicId={topicId}
+        date={date}
+        correctAnswersCount={correctAnswersCount}
+        incorrectAnswersCount={incorrectAnswersCount}
         unattemptedCount={unattemptedCount}
+        obtainedPoints={obtainedPoints}
+        obtainedPercentage={obtainedPercentage}
       />
     </div>
   );

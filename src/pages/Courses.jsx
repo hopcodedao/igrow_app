@@ -25,7 +25,7 @@ function Courses() {
   return (
     <>
       <div className="mx-auto mb-32 flex min-h-screen w-[90%] animate-reveal flex-col items-center">
-        <h1 className="page-heading">Khám phá các khóa học</h1>
+        <h1 className="page-heading text-3xl md:text-4xl">Khám phá các khóa học</h1>
         {shuffledCourses.length > 0 && (
           <div className="mx-auto grid h-full w-full grid-cols-quizzes justify-items-center gap-7">
             {/* Đổi biến `topic` thành `course` cho rõ nghĩa */}
