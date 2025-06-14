@@ -10,6 +10,7 @@ import { useAuth } from "../contexts/AuthContext";
 import useLessonData from "../hooks/useLessonData";
 import { saveProgressToDB } from "../utils/db";
 import { checkAndAwardBadges } from "../utils/gamification";
+import successSound from '../assets/success.mp3';
 
 const initialState = [];
 
@@ -27,7 +28,22 @@ const reducer = (state, action) => {
     }
     case "answer": {
       const questions = _.cloneDeep(state);
-      questions[action.questionID].options[action.optionIndex].checked = action.value;
+      const currentQ = questions[action.questionID];
+
+      // Kiểm tra xem tùy chọn đã nhấp có đang được chọn hay không
+      const isAlreadyChecked = currentQ.options[action.optionIndex].checked;
+
+      // Bỏ chọn tất cả các tùy chọn cho câu hỏi hiện tại
+      currentQ.options.forEach((option) => {
+        option.checked = false;
+      });
+
+      // Nếu tùy chọn đã nhấp chưa được chọn, hãy chọn nó
+      if (!isAlreadyChecked) {
+        currentQ.options[action.optionIndex].checked = true;
+      }
+      // Nếu nó đã được chọn, nó sẽ bị bỏ chọn (đã tắt)
+
       return questions;
     }
     default:
@@ -44,8 +60,9 @@ function Lesson() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const date = useMemo(() => new Date(), []);
-  const [answerSelected, setAnswerSelected] = useState(false);
-  const [isTutorOpen, setIsTutorOpen] = useState(false); // NEW
+  const [isTutorOpen, setIsTutorOpen] = useState(false);
+
+  const successAudio = useMemo(() => new Audio(successSound), []);
 
   useEffect(() => {
     if (lesson && lesson.questions) {
@@ -56,26 +73,29 @@ function Lesson() {
     }
   }, [lesson]);
 
-  const handleAnswerChange = useCallback((e, index) => {
+  // handleAnswerChange đã được sửa đổi để chỉ nhận chỉ mục
+  const handleAnswerChange = useCallback((index) => {
     dispatch({
       type: "answer",
       questionID: currentQuestion,
       optionIndex: index,
-      value: e.target.checked,
     });
-    setAnswerSelected(true);
   }, [currentQuestion]);
 
-  const onAnswerSelected = (e, index) => {
-    handleAnswerChange(e, index);
+  const onAnswerSelected = (index) => { // Đổi tên từ e, index thành chỉ index
+    handleAnswerChange(index);
   };
 
   const nextQuestion = useCallback(() => {
-    if (answerSelected && qnaSet && currentQuestion < qnaSet.length - 1) {
+    const currentQData = qnaSet[currentQuestion];
+    // Kiểm tra trực tiếp từ qnaSet xem có tùy chọn nào được chọn không
+    const isAnyOptionChecked = currentQData?.options.some(option => option.checked);
+
+    if (isAnyOptionChecked && currentQuestion < qnaSet.length - 1) {
+      successAudio.play().catch(e => console.error("Error playing sound:", e));
       setCurrentQuestion((curr) => curr + 1);
     }
-    setAnswerSelected(false);
-  }, [currentQuestion, qnaSet, answerSelected]);
+  }, [currentQuestion, qnaSet, successAudio]);
 
   const previousQuestion = useCallback(() => {
     if (currentQuestion >= 1) setCurrentQuestion((curr) => curr - 1);
@@ -130,18 +150,18 @@ function Lesson() {
 
   return (
     <>
-      {/* Floating AI Tutor Button */}
-      <button 
+      {/* Nút Trợ lý AI nổi */}
+      <button
         onClick={() => setIsTutorOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex h-16 w-16 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-transform hover:scale-110"
+        className="fixed bottom-24 right-6 z-40 flex h-16 w-16 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-transform hover:scale-110 md:bottom-6"
         title="Hỏi đáp với Trợ lý AI"
       >
-        <span className="material-symbols-outlined text-3xl">psychology</span>
+        <span className="material-symbols-outlined text-3xl">forum</span>
       </button>
 
-      {/* AI Tutor Modal */}
+      {/* Modal Trợ lý AI */}
       {lesson && (
-        <AITutorModal 
+        <AITutorModal
           isOpen={isTutorOpen}
           onClose={() => setIsTutorOpen(false)}
           initialContext={lesson.title}
@@ -166,13 +186,16 @@ function Lesson() {
               <Rules />
               <div className="card mb-40 flex flex-col justify-center rounded-md p-3">
                 <div className="flex flex-col items-center justify-center text-xl font-bold text-black dark:text-white sm:text-3xl">
-                  {qnaSet[currentQuestion].title}
-                  {qnaSet[currentQuestion].image && (
+                  {qnaSet[currentQuestion]?.title}
+                  {qnaSet[currentQuestion]?.image && (
                     <img src={qnaSet[currentQuestion].image} alt="Minh họa" className="my-4 max-h-64 object-contain" />
                   )}
                 </div>
                 <hr className="mb-8 mt-3 h-px border-0 bg-primary" />
-                <AnswerBox input handleChange={onAnswerSelected} options={qnaSet[currentQuestion].options} />
+                {/* Truyền các tùy chọn của câu hỏi hiện tại và trình xử lý đã sửa đổi */}
+                {qnaSet[currentQuestion] && (
+                  <AnswerBox handleChange={onAnswerSelected} options={qnaSet[currentQuestion].options} />
+                )}
               </div>
               <ProgressBar nextQ={nextQuestion} prevQ={previousQuestion} progress={progressPercentage} submit={completeLesson} />
             </>

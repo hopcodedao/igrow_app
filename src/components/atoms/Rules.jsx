@@ -26,10 +26,9 @@ function Rules({ className }) {
         <>
           <hr className="my-3 h-px border-0 bg-primary" />
           <ol className="ml-6 list-disc text-left text-lg">
-            <li className="mb-1">Câu hỏi có thể có nhiều đáp án.</li>
             <li className="mb-1">Mỗi câu hỏi có giá trị 10 điểm.</li>
             <li className="mb-1">
-              Câu trả lời sai hoặc không hoàn toàn chính xác đều bị trừ 2 điểm.
+              Câu trả lời sai bị trừ 2 điểm.
             </li>
             <li className="mb-1">
               Không làm câu hỏi nào sẽ không bị trừ điểm.

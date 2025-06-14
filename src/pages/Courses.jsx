@@ -42,7 +42,8 @@ function Courses() {
                   id={course.topicID}
                   title={course.title}
                   description={course.description} // Thêm mô tả
-                  type="course" // Đổi type thành "course"
+                  type="course"
+                  image={course.image}
                 />
               </Link>
             ))}

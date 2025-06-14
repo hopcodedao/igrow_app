@@ -1,3 +1,5 @@
+import igownImage from '../assets/images/igown.png';
+
 const aboutDetails = [
   `Chào mừng đến với iGrow - Nền tảng trao quyền kỹ năng số và tư duy khởi nghiệp cho thanh niên dân tộc thiểu số! Dự án iGrow ra đời từ chính những trăn trở và hoạt động thực tiễn của nhóm tại vùng Đồng bằng sông Cửu Long (ĐBSCL). `,
   `Qua quá trình làm việc trực tiếp với thanh niên các dân tộc Khơ-me, Hoa, Chăm tại Sóc Trăng, Trà Vinh, An Giang, chúng tôi nhận thấy một nhu cầu cấp thiết về việc nâng cao kỹ năng số và tư duy khởi nghiệp.  Để giải quyết bài toán này, iGrow được xây dựng thành một giải pháp giáo dục, hiện thực hóa qua ứng dụng di động ưu tiên hoạt động ngoại tuyến (offline-first) và tích hợp Trí tuệ nhân tạo (AI). `,
@@ -10,8 +12,17 @@ function About() {
   return (
     <div className="mx-auto flex w-[85%] animate-reveal flex-col items-center justify-center">
       <h1 className="page-heading">Giới thiệu về iGrow</h1>
+      <div className="flex flex-col items-center justify-center text-center">
+        {/* Thêm hình ảnh thành viên ở đây */}
+        <img
+          src={igownImage}
+          alt="Thành viên iGrow"
+          className="w-full max-w-lg h-auto rounded-lg mb-8 shadow-lg object-contain"
+        />
+      </div>
 
       <div className="card flex !w-full max-w-4xl flex-col gap-10 p-6 text-justify font-medium dark:text-red-300 sm:w-3/5 sm:text-xl">
+      
         {aboutDetails.map((para, index2) => (
           <p
             key={index2}
@@ -21,6 +32,7 @@ function About() {
           </p>
         ))}
       </div>
+      
 
       <span className="mt-14 block font-semibold tracking-wide">
       Thiết kế và phát triển 💚 bởi &nbsp;
