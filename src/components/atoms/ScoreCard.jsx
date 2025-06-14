@@ -16,7 +16,7 @@ function ScoreCard({
 
   return (
     <div className="card mx-auto flex flex-col rounded-xl lg:w-[500px]">
-      <span className="mb-2 w-full text-center text-4xl font-semibold uppercase tracking-wider text-black drop-shadow-xl dark:text-white lg:text-5xl">
+      <span className="mb-2 w-full text-center text-2xl font-semibold uppercase tracking-wider text-black drop-shadow-xl dark:text-white lg:text-3xl">
         Kết quả học tập
       </span>
       <span className="mb-4 w-full text-center text-3xl font-bold text-primary drop-shadow-xl dark:text-secondary lg:text-4xl">

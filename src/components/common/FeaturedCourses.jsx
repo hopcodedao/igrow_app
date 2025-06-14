@@ -42,6 +42,7 @@ function FeaturedCourses() {
               title={course.title}
               description={course.description}
               type="course" // Sử dụng type 'course'
+              image={course.thumbnail}
             />
           </Link>
         ))}

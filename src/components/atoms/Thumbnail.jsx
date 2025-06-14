@@ -1,3 +1,4 @@
+// src/components/atoms/Thumbnail.jsx
 import { useState } from 'react';
 
 import { placeholder } from '../../assets';
@@ -5,12 +6,14 @@ import { placeholder } from '../../assets';
 import CountUpAnimation from './CountUpAnimation';
 
 // Thêm "description" vào props
-function Thumbnail({ title, submissions, id, noq, type, description }) {
+function Thumbnail({ title, submissions, id, noq, type, description, image }) { // Thêm 'image' vào props
   const [imageLoaded, setImageLoaded] = useState(false);
   let link = null;
 
   if (type === 'video') {
     link = `http://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+  } else if (type === 'course') { // Thêm điều kiện cho type 'course'
+    link = image; // SỬ DỤNG TRỰC TIẾP URL TỪ PROP 'image' (tức là course.thumbnail)
   } else {
     // Bạn nên tạo một thư mục mới cho ảnh thumbnail của khóa học
     // Ví dụ: /thumbnails/courses/${id}.webp

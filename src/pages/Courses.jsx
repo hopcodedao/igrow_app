@@ -39,11 +39,12 @@ function Courses() {
               >
                 {/* Cập nhật các props cho Thumbnail */}
                 <Thumbnail
-                  id={course.topicID}
+                  key={course.id}
+                  id={course.id}
                   title={course.title}
-                  description={course.description} // Thêm mô tả
                   type="course"
-                  image={course.image}
+                  description={course.description} // Đảm bảo truyền description
+                  image={course.thumbnail} // CHẮC CHẮN TRUYỀN course.thumbnail VÀO PROP image
                 />
               </Link>
             ))}
