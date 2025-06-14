@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 
 import { PageNotFound } from ".";
-import { AnswerBox, ProgressBar, Rules } from "../components";
+import { AnswerBox, ProgressBar, Rules, AITutorModal } from "../components";
 import { useAuth } from "../contexts/AuthContext";
 import useLessonData from "../hooks/useLessonData";
 import { saveProgressToDB } from "../utils/db";
@@ -45,6 +45,7 @@ function Lesson() {
   const navigate = useNavigate();
   const date = useMemo(() => new Date(), []);
   const [answerSelected, setAnswerSelected] = useState(false);
+  const [isTutorOpen, setIsTutorOpen] = useState(false); // NEW
 
   useEffect(() => {
     if (lesson && lesson.questions) {
@@ -118,10 +119,7 @@ function Lesson() {
 
     try {
       await saveProgressToDB(markSheetObject);
-
-      // ✅ Gọi hàm kiểm tra và trao huy hiệu
       await checkAndAwardBadges(currentUser.uid, markSheetObject);
-
       navigate(`/result/${lessonId}`, { state: { qnaSet, markSheetObject } });
     } catch (err) {
       console.error("Lỗi khi lưu bài học:", err);
@@ -132,6 +130,24 @@ function Lesson() {
 
   return (
     <>
+      {/* Floating AI Tutor Button */}
+      <button 
+        onClick={() => setIsTutorOpen(true)}
+        className="fixed bottom-6 right-6 z-40 flex h-16 w-16 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-transform hover:scale-110"
+        title="Hỏi đáp với Trợ lý AI"
+      >
+        <span className="material-symbols-outlined text-3xl">psychology</span>
+      </button>
+
+      {/* AI Tutor Modal */}
+      {lesson && (
+        <AITutorModal 
+          isOpen={isTutorOpen}
+          onClose={() => setIsTutorOpen(false)}
+          initialContext={lesson.title}
+        />
+      )}
+
       {loading && <p className="page-heading text-lg">Đang tải bài học...</p>}
       {error && <PageNotFound />}
       {!loading && !error && lesson && (

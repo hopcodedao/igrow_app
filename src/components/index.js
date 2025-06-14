@@ -31,3 +31,5 @@ export { default as ProgressBar } from './common/ProgressBar';
 export { default as ResultSummary } from './common/ResultSummary';
 export { default as SubNavigationBar } from './common/SubNavigationBar';
 export { default as UserDetail } from './common/UserDetail';
+export { default as AITutorModal } from './common/AITutorModal';
+export { default as CommentForm } from './forms/CommentForm';

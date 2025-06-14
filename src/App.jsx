@@ -24,7 +24,6 @@ import {
   PrivateOutlet,
   PublicOutlet,
 } from "./components";
-import ChatAI from './components/ChatAI';
 import { AuthProvider } from "./contexts/AuthContext";
 
 // App Pages
@@ -33,6 +32,9 @@ import {
   CourseDetail,
   Courses,
   DetailedSubmission,
+  Forum,
+  NewPost,
+  PostDetail,
   Home,
   Learn,
   Lesson,
@@ -56,7 +58,6 @@ function Root() {
           <Route element={<Home />} path="/" />
           <Route element={<Courses />} path="/courses" />
           <Route element={<About />} path="/about" />
-          <Route element={<ChatAI />} path="/chat-ai" />
           <Route element={<Reset />} path="/reset" />
           <Route element={<Learn />} path="/learn" />
           <Route element={<PublicOutlet />} path="/">
@@ -65,6 +66,9 @@ function Root() {
           </Route>
           <Route element={<PrivateOutlet />} path="/">
             <Route element={<CourseDetail />} path="/course/:courseId" />
+            <Route element={<Forum />} path="/course/:courseId/forum" />
+            <Route element={<NewPost />} path="/course/:courseId/forum/new" />
+            <Route element={<PostDetail />} path="/course/:courseId/post/:postId" />
             <Route
               element={<Lesson />}
               errorElement={<PageNotFound />}
@@ -112,7 +116,6 @@ function App() {
   // Preloading state
   const [preloading, setPreloading] = useState(true);
 
-  // Display preloading animation
   useEffect(() => {
     setTimeout(() => {
       setPreloading(false);
@@ -135,7 +138,8 @@ function App() {
             child(ref(db), `submissions/${userId}`)
           ).key;
           const submissionsUpdate = {};
-          submissionsUpdate[`submissions/${userId}/${submissionsKey}`] = submissionData;
+          submissionsUpdate[`submissions/${userId}/${submissionsKey}`] =
+            submissionData;
           try {
             await update(ref(db), submissionsUpdate);
             await markProgressAsSynced(submissionId);

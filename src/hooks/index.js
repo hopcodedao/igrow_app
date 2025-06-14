@@ -9,3 +9,5 @@ export { default as useGAEventTracker } from './useGAEventTracker';
 export { default as useLessonData } from './useLessonData';
 export { default as useSubmissions } from './useSubmissions';
 export { default as useUserAchievements } from './useUserAchievements';
+export { default as useForumPosts } from './useForumPosts';
+export { default as usePostAndComments } from './usePostAndComments';
