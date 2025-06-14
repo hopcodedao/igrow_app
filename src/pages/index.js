@@ -16,3 +16,8 @@ export { default as Video } from './Video';
 export { default as Forum } from './Forum';
 export { default as NewPost } from './NewPost';
 export { default as PostDetail } from './PostDetail';
+export { default as Mentors } from './Mentors';
+export { default as AdminDashboard } from './admin/AdminDashboard';
+export { default as AdminLayout } from './admin/AdminLayout';
+export { default as ManageCourses } from './admin/ManageCourses';
+export { default as CourseForm } from './admin/CourseForm';

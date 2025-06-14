@@ -33,3 +33,4 @@ export { default as SubNavigationBar } from './common/SubNavigationBar';
 export { default as UserDetail } from './common/UserDetail';
 export { default as AITutorModal } from './common/AITutorModal';
 export { default as CommentForm } from './forms/CommentForm';
+export { default as AdminOutlet } from './react-router/AdminOutlet';

@@ -10,19 +10,21 @@ function Forum() {
 
   return (
     <div className="mx-auto mb-32 w-[90%] max-w-5xl animate-reveal">
-      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-        <h1 className="page-heading my-4 text-left">Thảo luận khóa học</h1>
+      {/* --- THAY ĐỔI BẮT ĐẦU TỪ ĐÂY --- */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="page-heading my-0 text-left">Thảo luận khóa học</h1>
         {currentUser && (
           <Link
             to={`/course/${courseId}/forum/new`}
-            className="fill-button mb-4 sm:mb-0"
+            className="fill-button flex-shrink-0"
           >
             Tạo bài viết mới
           </Link>
         )}
       </div>
+      {/* --- THAY ĐỔI KẾT THÚC Ở ĐÂY --- */}
 
-      <div className="card space-y-4 p-4">
+      <div className="card mt-8 space-y-4 p-4">
         {loading && <p>Đang tải danh sách bài viết...</p>}
         {error && <p>Không thể tải được danh sách bài viết.</p>}
         {!loading && posts.length === 0 && (
@@ -34,9 +36,9 @@ function Forum() {
         {!loading &&
           posts.map((post) => (
             <Link
-            key={post.id}
-            to={`/course/${courseId}/post/${post.id}`}
-            className="block rounded-lg p-4 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+              key={post.id}
+              to={`/course/${courseId}/post/${post.id}`}
+              className="block rounded-lg p-4 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               <div className="flex items-start gap-4">
                 <img

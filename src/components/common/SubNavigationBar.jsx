@@ -54,6 +54,13 @@ function SubNavigationBar({ className }) {
         </NavLink>
         <NavLink
           className={({ isActive }) => (isActive ? "active-page" : null)}
+          to="/mentors"
+          onClick={handleLinkClick}
+        >
+          <NavButton text="Cố vấn" />
+        </NavLink>
+        <NavLink
+          className={({ isActive }) => (isActive ? "active-page" : null)}
           to="/about"
           onClick={handleLinkClick}
         >

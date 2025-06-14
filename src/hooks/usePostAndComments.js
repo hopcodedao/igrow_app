@@ -10,56 +10,46 @@ export default function usePostAndComments(courseId, postId) {
 
   useEffect(() => {
     if (!courseId || !postId) {
+      console.error("Thiếu courseId hoặc postId");
       setLoading(false);
       setError(true);
       return () => {};
     }
 
     const db = getDatabase();
-    const postRef = ref(
-      db,
-      `forum_posts/<span class="math-inline">\{courseId\}/</span>{postId}`
-    );
+    const postRef = ref(db, `forum_posts/${courseId}/${postId}`);
     const commentsRef = ref(db, `forum_comments/${postId}`);
 
-    // Lắng nghe thay đổi của bài viết
-    const postUnsubscribe = onValue(
-      postRef,
-      (snapshot) => {
-        if (snapshot.exists()) {
-          setPost({ id: postId, ...snapshot.val() });
-        } else {
-          setError(true);
-        }
-        setLoading(false);
-      },
-      (err) => {
-        console.error(err);
-        setError(true);
-        setLoading(false);
-      }
-    );
+    console.log("Đang lắng nghe dữ liệu cho bài viết:", `forum_posts/${courseId}/${postId}`);
 
-    // Lắng nghe thay đổi của các bình luận
-    const commentsUnsubscribe = onValue(commentsRef, (snapshot) => {
+    const postUnsubscribe = onValue(postRef, (snapshot) => {
       if (snapshot.exists()) {
-        const data = snapshot.val();
-        const commentsArray = Object.entries(data)
-          .map(([commentId, commentData]) => ({
-            id: commentId,
-            ...commentData,
-          }))
-          .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)); // Sắp xếp bình luận cũ nhất trước
-        setComments(commentsArray);
+        console.log("=> Đã nhận dữ liệu bài viết!");
+        setPost({ id: postId, ...snapshot.val() });
       } else {
-        setComments([]);
+        console.error("Không tìm thấy bài viết trong database.");
+        setError(true);
+      }
+      setLoading(false);
+    });
+
+    const commentsUnsubscribe = onValue(commentsRef, (snapshot) => {
+      console.log("=> Đã nhận dữ liệu bình luận!");
+      if (snapshot.exists()) {
+          const data = snapshot.val();
+          const commentsArray = Object.entries(data).map(([commentId, commentData]) => ({
+              id: commentId,
+              ...commentData,
+          })).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+          setComments(commentsArray);
+      } else {
+          setComments([]);
       }
     });
 
-    // Dọn dẹp cả hai listeners
     return () => {
-      off(postRef, "value", postUnsubscribe);
-      off(commentsRef, "value", commentsUnsubscribe);
+      off(postRef, 'value', postUnsubscribe);
+      off(commentsRef, 'value', commentsUnsubscribe);
     };
   }, [courseId, postId]);
 

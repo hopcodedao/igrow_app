@@ -1,11 +1,11 @@
 // src/pages/CourseDetail.jsx
 import { useParams, Link } from 'react-router-dom';
-import useCourse from '../hooks/useCourse'; // Import hook mới
+import useCourse from '../hooks/useCourse';
 import { PageNotFound } from './';
 import { Footer } from '../components';
 
 function CourseDetail() {
-  const { courseId } = useParams(); // Lấy ID của khóa học từ URL
+  const { courseId } = useParams();
   const { loading, error, course } = useCourse(courseId);
 
   if (loading) {
@@ -18,19 +18,21 @@ function CourseDetail() {
 
   return (
     <>
-      <div className="mx-auto mb-32 flex w-[90%] animate-reveal flex-col">
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <h1 className="page-heading text-center md:text-left">{course.title}</h1>
+      <div className="mx-auto mb-16 flex w-[90%] animate-reveal flex-col">
+        {/* --- THAY ĐỔI BẮT ĐẦU TỪ ĐÂY --- */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <h1 className="page-heading my-0 text-left">{course.title}</h1>
           <Link
             to={`/course/${courseId}/forum`}
-            className="fill-button mb-8 whitespace-nowrap md:mb-0"
+            className="fill-button flex-shrink-0 whitespace-nowrap"
           >
             <span className="material-symbols-outlined mr-2">forum</span>
             Vào diễn đàn
           </Link>
         </div>
+        {/* --- THAY ĐỔI KẾT THÚC Ở ĐÂY --- */}
 
-        <p className="-mt-8 mb-12 text-center text-lg text-gray-700 dark:text-gray-300">
+        <p className="mt-4 mb-8 text-lg text-gray-700 dark:text-gray-300 md:text-center">
           {course.description}
         </p>
 
@@ -43,10 +45,7 @@ function CourseDetail() {
               <ul className="space-y-3">
                 {module.lessons?.map((lesson, lessonIndex) => (
                   <li key={lessonIndex} className="flex items-center">
-                    <span className="material-symbols-outlined mr-3 text-secondary">
-                      school
-                    </span>
-                    {/* Link đến bài học chi tiết */}
+                    <span className="material-symbols-outlined mr-3 text-secondary">school</span>
                     <Link
                       to={`/lesson/${lesson.lessonId}`}
                       className="text-lg font-medium hover:text-primary dark:hover:text-secondary"

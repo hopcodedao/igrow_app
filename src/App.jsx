@@ -26,6 +26,9 @@ import {
 } from "./components";
 import { AuthProvider } from "./contexts/AuthContext";
 
+import { AdminLayout, AdminDashboard, ManageCourses, CourseForm } from './pages';
+import { AdminOutlet } from './components';
+
 // App Pages
 import {
   About,
@@ -37,6 +40,7 @@ import {
   PostDetail,
   Home,
   Learn,
+  Mentors,
   Lesson,
   Login,
   PageNotFound,
@@ -60,6 +64,7 @@ function Root() {
           <Route element={<About />} path="/about" />
           <Route element={<Reset />} path="/reset" />
           <Route element={<Learn />} path="/learn" />
+          <Route element={<Mentors />} path="/mentors" />
           <Route element={<PublicOutlet />} path="/">
             <Route element={<SignUp />} path="signup" />
             <Route element={<Login />} path="login" />
@@ -91,6 +96,14 @@ function Root() {
               errorElement={<PageNotFound />}
               path="result/:id"
             />
+          </Route>
+          <Route element={<AdminOutlet />} path="/admin">
+              <Route element={<AdminLayout />}>  {/* <-- Bọc các trang admin bằng Layout */}
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="courses" element={<ManageCourses />} />
+                  <Route path="courses/new" element={<CourseForm />} />
+                  <Route path="courses/edit/:courseId" element={<CourseForm />} />
+              </Route>
           </Route>
           <Route element={<PageNotFound />} path="*" />
         </Route>
